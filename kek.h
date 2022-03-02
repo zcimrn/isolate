@@ -19,11 +19,13 @@ void debug(int pid, const char* message, int count) {
 int f(void* args) {
     int pid = getpid();
     debug(pid, "preparing", 0);
+    sethostname("fake", 4); // some tests
     int* pipe_fds = (int*)args, fd = pipe_fds[0];
     char c;
     debug(pid, "waiting for start command", 0);
     read(fd, &c, 1);
-    debug(pid, "executing", 2);
+    debug(pid, "executing", 0);
+    execve("/bin/sh", 0, 0);
     debug(pid, "exiting", 0);
     return 0;
 }
@@ -42,8 +44,9 @@ void run() {
     int fd = pipe_fds[1];
     // preparing namespaces here
     debug(pid, "cloning", 0);
-    int child_pid = clone(f, STACK + 8192, SIGCHLD, (void*)pipe_fds); // something very strange...
-    debug(pid, "doing something else", 2);
+    int flags = SIGCHLD | CLONE_NEWIPC | CLONE_NEWNET | CLONE_NEWNS | CLONE_NEWPID | CLONE_NEWUSER | CLONE_NEWUTS;
+    int child_pid = clone(f, STACK + 8192, flags, (void*)pipe_fds); // something very strange...
+    debug(pid, "doing something else", 0);
     debug(pid, "creating cgroup", 0);
     // preparing cgroup here
     FILE* file = fopen("/sys/fs/cgroup/test/cgroup.procs", "w");
@@ -53,7 +56,7 @@ void run() {
     }
     fprintf(file, "%d", child_pid);
     fclose(file);
-    debug(pid, "doing something else", 2);
+    debug(pid, "doing something else", 0);
     char c;
     debug(pid, "sending start command", 0);
     write(fd, &c, 1);
