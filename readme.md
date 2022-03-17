@@ -2,8 +2,12 @@
 
 **Don't try this at home, kids!**
 
-Create cgroup `sudo mkdir /sys/fs/cgroup/test`
+**Warning: check Makefile! It uses sudo!**
 
-Build `go build`
+How to build:
 
-Start with sudo `sudo ./isolate`
+    make
+
+How to run:
+
+    ./isolate
