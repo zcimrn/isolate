@@ -1,6 +1,7 @@
 *
 !.gitignore
 !readme.md
+!Makefile
 !go.mod
-!kek.h
+!isolate.h
 !main.go

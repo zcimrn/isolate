@@ -1,14 +1,15 @@
 package main
 
-/*
-#include "kek.h"
-*/
+// #cgo LDFLAGS: -lcap
+// #include "isolate.h"
 import "C"
 
 import "fmt"
 
 func main() {
-    fmt.Println("calling from go")
-    C.run()
-    fmt.Println("exiting from go")
+    fmt.Println("[ GO ] entering main func")
+    //C.init();
+    C.run();
+    //C.clean();
+    fmt.Println("[ GO ] exiting main func")
 }
